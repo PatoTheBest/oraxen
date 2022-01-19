@@ -81,7 +81,8 @@ public class StringBlockMechanicListener implements Listener {
             block.getWorld().playSound(block.getLocation(), stringBlockMechanic.getBreakSound(), 1.0f, 0.8f);
         if (stringBlockMechanic.getLight() != -1)
             WrappedLightAPI.removeBlockLight(block.getLocation());
-        stringBlockMechanic.getDrop().spawns(block.getLocation(), event.getPlayer().getInventory().getItemInMainHand());
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
+            stringBlockMechanic.getDrop().spawns(block.getLocation(), event.getPlayer().getInventory().getItemInMainHand());
         event.setDropItems(false);
     }
 
