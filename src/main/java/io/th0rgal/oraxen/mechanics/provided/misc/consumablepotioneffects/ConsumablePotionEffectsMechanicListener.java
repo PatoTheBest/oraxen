@@ -21,7 +21,7 @@ public class ConsumablePotionEffectsMechanicListener implements Listener {
         String itemID = OraxenItems.getIdByItem(item);
         if (!factory.isNotImplementedIn(itemID)) {
             ConsumablePotionEffectsMechanic mechanic = (ConsumablePotionEffectsMechanic) factory.getMechanic(itemID);
-            mechanic.onItemPlaced(event.getPlayer());
+            mechanic.onItemConsumed(event.getPlayer());
         }
     }
 

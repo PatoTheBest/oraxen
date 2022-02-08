@@ -2,6 +2,7 @@ package io.th0rgal.oraxen.mechanics.provided.misc.consumablepotioneffects;
 
 import io.th0rgal.oraxen.mechanics.Mechanic;
 import io.th0rgal.oraxen.mechanics.MechanicFactory;
+import io.th0rgal.oraxen.utils.commands.CommandsParser;
 import org.bukkit.configuration.ConfigurationSection;
 
 import org.bukkit.entity.Player;
@@ -13,12 +14,22 @@ import java.util.*;
 public class ConsumablePotionEffectsMechanic extends Mechanic {
 
     private final Set<PotionEffect> effects = new HashSet<>();
+    private CommandsParser commandsParser;
 
     public ConsumablePotionEffectsMechanic(MechanicFactory mechanicFactory, ConfigurationSection section) {
         super(mechanicFactory, section);
-        for (String effectSection : section.getKeys(false))
+        for (String effectSection : section.getKeys(false)) {
+            if (effectSection.equalsIgnoreCase("commands")) {
+                continue;
+            }
+
             if (section.isConfigurationSection(effectSection))
                 registersEffectFromSection(section.getConfigurationSection(effectSection));
+        }
+
+        ConfigurationSection commandsSection = section.getConfigurationSection("commands");
+        if (commandsSection != null)
+            commandsParser = new CommandsParser(commandsSection);
     }
 
     public void registersEffectFromSection(ConfigurationSection section) {
@@ -43,8 +54,12 @@ public class ConsumablePotionEffectsMechanic extends Mechanic {
         effects.add(potionEffect);
     }
 
-    public void onItemPlaced(Player player) {
+    public void onItemConsumed(Player player) {
         player.addPotionEffects(effects);
+
+        if (commandsParser != null) {
+            commandsParser.perform(player);
+        }
     }
 
 }
